@@ -1,0 +1,28 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ProductService } from "../../service/product/product.service";
+
+@Component({
+  selector: 'app-product-card',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './product-card.component.html',
+  styleUrls: ['./product-card.component.scss']
+})
+export class ProductCardComponent {
+  @Input() name = '';
+  @Input() price = '';
+  @Input() description = '';
+  @Input() imgUrl = '';
+  @Input() id = ''
+  @Input() elementIndex: number = 0;
+  @Output() removeClick: EventEmitter<number> = new EventEmitter<number>();
+
+  constructor(private productService: ProductService) {}
+
+  public onRemoveProduct(id: string, index: number) {
+    this.productService.deleteProduct(id).subscribe(() => {
+      this.removeClick.emit(index)
+    });
+  }
+}
