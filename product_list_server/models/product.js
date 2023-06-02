@@ -16,6 +16,7 @@ let productSchema = new Schema({
     },
     imagePath: {
         type: String,
+        require: true,
     }
 })
 

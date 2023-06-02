@@ -19,6 +19,6 @@ export const routes: Routes = [
 
   {
     path: 'edit/:id',
-    loadComponent: () => import('./components/product-details/product-details.component').then(m => m.ProductDetailsComponent)
+    loadComponent: () => import('./components/product-update/product-update.component').then(m => m.ProductUpdateComponent)
   },
 ];

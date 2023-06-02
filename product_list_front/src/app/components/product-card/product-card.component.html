@@ -1,11 +1,11 @@
 <div class="card">
-  <img [src]="'http://localhost:3000/product_list_server/' + imgUrl" class="card-img-top" alt="Product Image">
+  <img [src]="imgUrl" class="card-img-top" alt="Product Image">
   <div class="card-body d-flex flex-column">
     <h5 class="card-title">{{ name }}</h5>
     <p class="card-text">{{ description }}</p>
     <p class="card-text">Price: ${{ price }}</p>
     <div class="d-flex justify-content-sm-between">
-      <a href="#" class="btn btn-primary mr-auto">Details</a>
+      <a class="btn btn-primary mr-auto" (click)="onProductDetails(id)">Details</a>
       <a class="btn btn-danger ml-auto" (click)="onRemoveProduct(id, elementIndex)">Delete</a>
     </div>
   </div>

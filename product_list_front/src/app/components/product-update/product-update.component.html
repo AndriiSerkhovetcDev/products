@@ -1,7 +1,7 @@
 <div class="row justify-content-center mt-5">
   <div class="col-md-8">
-    <h1>Add new product</h1>
-    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <h1>Update product</h1>
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label class="pb-1">Name</label>
         <input
@@ -43,17 +43,18 @@
         <label class="pb-1">Image</label>
         <input
           class="form-control"
-          type="file" formControlName="image"
+          type="file"
+          formControlName="image"
+          value="editForm.image"
           [ngClass]="{'is-invalid': isInvalid('image')}"
-          (change)="onFileSelected($event)"
-          required>
+          (change)="onFileSelected($event)">
         <div *ngIf="isInvalid('image')" class="error-message">
           {{ getErrorMessage('image') }}
         </div>
       </div>
 
       <div class="form-group d-flex justify-content-end pt-3">
-        <button class="btn btn-primary btn-block" type="submit" [disabled]="productForm.invalid">Add Product</button>
+        <button class="btn btn-primary btn-block" type="submit" [disabled]="editForm.invalid">Save Product</button>
       </div>
     </form>
   </div>

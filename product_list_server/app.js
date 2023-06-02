@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors')
+const AWS = require('aws-sdk');
 
 const indexRouter = require('./routes/index');
 const productsRouter = require('./routes/products');
@@ -31,6 +32,13 @@ mongoose.connect(mongoDBUrl, { useNewUrlParser: true, useUnifiedTopology: true }
     .catch((error) => {
       console.error('Error connecting to MongoDB:', error);
     });
+
+// Connect to AWS SDK
+AWS.config.update({
+    accessKeyId: 'AKIAVJU5PL6ZTXHZ3B4T',
+    secretAccessKey: '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',
+    region: 'eu-north-1'
+});
 
 app.use('/', indexRouter);
 app.use('/api/products', productsRouter);
