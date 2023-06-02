@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import { Router } from "@angular/router";
 import { ProductService } from "../../service/product/product.service";
+import {Erorrs, ErrorType} from "../../enum/erorrs";
 
 @Component({
   selector: 'app-add-product',
@@ -21,14 +22,18 @@ export class AddProductComponent {
     private productService: ProductService
     ) {
     this.productForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      price: ['', Validators.required],
-      description: ['', Validators.required]
+      name: ['', [Validators.required, Validators.minLength(3)]], // Валідація на мінімальну довжину
+      price: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]], // Валідація числового формату (до двох знаків після коми)
+      description: ['', [Validators.required, Validators.maxLength(200)]], // Валідація на максимальну довжину
+      image: ['', [Validators.required, this.fileExtension(['jpg', 'jpeg', 'png'])]]
     })
   }
+  public onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
 
-  public onFileSelected(event: any): void {
-    this.selectedFile = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+    }
   }
   public onSubmit() {
     if (this.productForm.invalid) {
@@ -51,7 +56,45 @@ export class AddProductComponent {
     }, (error) => this.productService.handleError(error) )
   }
 
-  public isInvalid(fieldName: string): boolean {
-    return this.productForm.controls[`${ fieldName }`].invalid && this.productForm.controls[`${ fieldName }`].touched
+  public isInvalid(controlName: string) {
+    const control = this.productForm.get(controlName);
+
+    return control !== null && control.invalid && (control.dirty || control.touched);
   }
+
+  public fileExtension(allowedExtensions: string[]) {
+    return (control: AbstractControl) => {
+      const file = control.value;
+      if (file) {
+        const extension = file.split('.').pop().toLowerCase();
+        if (!allowedExtensions.includes(extension)) {
+          return { invalidExtension: true };
+        }
+      }
+      return null;
+    };
+  }
+
+  public getErrorMessage(controlName: string): string {
+    const control = this.productForm.get(controlName);
+    const errors = control?.errors;
+
+    if (!errors) {
+      return '';
+    }
+
+    switch (true) {
+      case !!errors[ErrorType.required]:
+        return Erorrs.required;
+      case !!errors[ErrorType.invalidExtension]:
+        return Erorrs.invalidFileFormat;
+      case !!errors[ErrorType.pattern] && controlName === 'price':
+        return Erorrs.pattern
+      case !!errors[ErrorType.minlength]:
+        return Erorrs.minLength;
+      default:
+        return '';
+    }
+  }
+
 }
