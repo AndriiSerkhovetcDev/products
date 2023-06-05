@@ -1,0 +1,61 @@
+<div class="row justify-content-center mt-5">
+  <div class="col-md-8">
+    <h1>Update product</h1>
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label class="pb-1">Name</label>
+        <input
+          class="form-control"
+          type="text" formControlName="name"
+          [ngClass]="{'is-invalid': isInvalid('name')}"
+          required>
+        <div *ngIf="isInvalid('name')" class="error-message">
+          {{ getErrorMessage('name') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="pb-1">Price</label>
+        <input
+          class="form-control"
+          type="text" formControlName="price"
+          [ngClass]="{'is-invalid': isInvalid('price')}"
+          required>
+        <div *ngIf="isInvalid('price')" class="error-message">
+          {{ getErrorMessage('price') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="pb-1">Description</label>
+        <input
+          class="form-control"
+          type="text"
+          formControlName="description"
+          [ngClass]="{'is-invalid': isInvalid('description')}"
+          required>
+        <div *ngIf="isInvalid('description')" class="error-message">
+          {{ getErrorMessage('description') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="pb-1">Image</label>
+        <input
+          class="form-control"
+          type="file"
+          formControlName="image"
+          value="editForm.image"
+          [ngClass]="{'is-invalid': isInvalid('image')}"
+          (change)="onFileSelected($event)">
+        <div *ngIf="isInvalid('image')" class="error-message">
+          {{ getErrorMessage('image') }}
+        </div>
+      </div>
+
+      <div class="form-group d-flex justify-content-end pt-3">
+        <button class="btn btn-primary btn-block" type="submit" [disabled]="editForm.invalid">Save Product</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -94,7 +94,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
 });
 
 // update
-router.put('/update/:id', async (req, res) => {
+router.put('/update/:id', upload.single('image'), async (req, res) => {
     try {
         const productId = req.params.id;
         const updatedProduct = req.body;
@@ -105,7 +105,54 @@ router.put('/update/:id', async (req, res) => {
             return res.status(404).json({ error: 'Product not found' });
         }
 
-        res.json(product);
+        if (req.file) {
+            const s3 = new AWS.S3();
+            const file = req.file;
+
+            if (!file || !['image/jpeg', 'image/png'].includes(file.mimetype)) {
+                return res.status(400).json({ error: 'Invalid file format. Only JPEG and PNG are allowed' });
+            }
+
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            const fileName = uniqueSuffix + file.originalname;
+
+            const params = {
+                Bucket: 'images-product-list-app',
+                Key: fileName,
+                Body: file.buffer,
+                ACL: 'public-read',
+                ContentType: file.mimetype
+            };
+
+            // Завантаження нового зображення на S3
+            s3.upload(params, async (err, data) => {
+                if (err) {
+                    console.error('Error uploading file to S3:', err);
+                    return res.status(500).json({ error: 'Error uploading file to S3' });
+                }
+
+                // Видалення старого зображення з S3
+                if (product.imagePath) {
+                    const oldImageKey = product.imagePath.split('/').pop();
+                    const deleteParams = {
+                        Bucket: 'images-product-list-app',
+                        Key: oldImageKey
+                    };
+                    s3.deleteObject(deleteParams, (err, data) => {
+                        if (err) {
+                            console.error('Error deleting file from S3:', err);
+                        }
+                    });
+                }
+
+                product.imagePath = data.Location; // Оновлення шляху до нового зображення
+                await product.save();
+
+                res.json(product);
+            });
+        } else {
+            res.json(product);
+        }
     } catch (error) {
         console.error('Error updating product:', error);
         res.status(500).json({ error: 'Error updating product' });

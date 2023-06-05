@@ -1,8 +1,9 @@
-import { Component, Inject, OnInit, signal } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ProductService } from "../../service/product/product.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ProductCardComponent } from "../product-card/product-card.component";
+import { ProductResponse} from "../../interfaces/product";
 @Component({
   selector: 'app-product-list',
   standalone: true,
@@ -12,20 +13,21 @@ import { ProductCardComponent } from "../product-card/product-card.component";
   styleUrls: ['./product-list.component.scss']
 })
 export class ProductListComponent implements OnInit {
-  public products = signal<any[]>([]);
+  public products = signal<ProductResponse[]>([]);
 
   constructor(private productService: ProductService) {
+   this.getProducts()
+  }
+  ngOnInit() {}
+
+  private getProducts(): void {
     this.productService.getProducts()
       .pipe(takeUntilDestroyed())
-      .subscribe((products: any) => {
+      .subscribe((products: ProductResponse[]) => {
         this.products.set(products)
       });
   }
-  ngOnInit() {
-  }
-
-  onRemoveProduct(index: number) {
-    console.log(index)
-    this.products.mutate( (value) => value.splice(index, 1))
+  public onRemoveProduct(index: number): void {
+    this.products.mutate( (value: ProductResponse[]) => value.splice(index, 1))
   }
 }

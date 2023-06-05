@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import { Router } from "@angular/router";
 import { ProductService } from "../../service/product/product.service";
-import {Erorrs, ErrorType} from "../../enum/erorrs";
+import { FormValidationService } from "../../service/form-validation/form-validation.service";
 
 @Component({
   selector: 'app-add-product',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  providers: [ProductService],
+  providers: [ProductService, FormValidationService],
   templateUrl: './add-product.component.html',
   styleUrls: ['./add-product.component.scss']
 })
@@ -19,13 +19,14 @@ export class AddProductComponent {
   constructor(
     public formBuilder: FormBuilder,
     private route: Router,
-    private productService: ProductService
+    private productService: ProductService,
+    private formValidationService: FormValidationService
     ) {
     this.productForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3)]], // Валідація на мінімальну довжину
       price: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]], // Валідація числового формату (до двох знаків після коми)
       description: ['', [Validators.required, Validators.maxLength(200)]], // Валідація на максимальну довжину
-      image: ['', [Validators.required, this.fileExtension(['jpg', 'jpeg', 'png'])]]
+      image: ['', [Validators.required, this.formValidationService.fileExtension()]]
     })
   }
   public onFileSelected(event: Event) {
@@ -35,7 +36,7 @@ export class AddProductComponent {
       this.selectedFile = file;
     }
   }
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.productForm.invalid) {
       return;
     }
@@ -56,45 +57,11 @@ export class AddProductComponent {
     }, (error) => this.productService.handleError(error) )
   }
 
-  public isInvalid(controlName: string) {
-    const control = this.productForm.get(controlName);
-
-    return control !== null && control.invalid && (control.dirty || control.touched);
-  }
-
-  public fileExtension(allowedExtensions: string[]) {
-    return (control: AbstractControl) => {
-      const file = control.value;
-      if (file) {
-        const extension = file.split('.').pop().toLowerCase();
-        if (!allowedExtensions.includes(extension)) {
-          return { invalidExtension: true };
-        }
-      }
-      return null;
-    };
+  public isInvalid(controlName: string): boolean {
+    return this.formValidationService.isInvalid(controlName, this.productForm);
   }
 
   public getErrorMessage(controlName: string): string {
-    const control = this.productForm.get(controlName);
-    const errors = control?.errors;
-
-    if (!errors) {
-      return '';
-    }
-
-    switch (true) {
-      case !!errors[ErrorType.required]:
-        return Erorrs.required;
-      case !!errors[ErrorType.invalidExtension]:
-        return Erorrs.invalidFileFormat;
-      case !!errors[ErrorType.pattern] && controlName === 'price':
-        return Erorrs.pattern
-      case !!errors[ErrorType.minlength]:
-        return Erorrs.minLength;
-      default:
-        return '';
-    }
+    return this.formValidationService.getErrorMessage(controlName, this.productForm);
   }
-
 }

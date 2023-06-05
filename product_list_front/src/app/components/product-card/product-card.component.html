@@ -5,7 +5,7 @@
     <p class="card-text">{{ description }}</p>
     <p class="card-text">Price: ${{ price }}</p>
     <div class="d-flex justify-content-sm-between">
-      <a href="#" class="btn btn-primary mr-auto">Details</a>
+      <a class="btn btn-primary mr-auto" (click)="onProductDetails(id)">Details</a>
       <a class="btn btn-danger ml-auto" (click)="onRemoveProduct(id, elementIndex)">Delete</a>
     </div>
   </div>
