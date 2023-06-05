@@ -1,9 +1,9 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ProductService } from "../../service/product/product.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ProductCardComponent } from "../product-card/product-card.component";
-import {ProductPayload, ProductResponse} from "../../interfaces/product";
+import { ProductResponse} from "../../interfaces/product";
 @Component({
   selector: 'app-product-list',
   standalone: true,

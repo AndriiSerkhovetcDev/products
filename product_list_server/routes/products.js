@@ -99,7 +99,7 @@ router.put('/update/:id', upload.single('image'), async (req, res) => {
         const productId = req.params.id;
         const updatedProduct = req.body;
 
-        const product = await Product.findById(productId);
+        const product = await Product.findByIdAndUpdate(productId, updatedProduct, { new: true });
 
         if (!product) {
             return res.status(404).json({ error: 'Product not found' });

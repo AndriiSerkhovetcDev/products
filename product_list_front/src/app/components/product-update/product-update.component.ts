@@ -5,7 +5,7 @@ import { Router } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { FormValidationService } from "../../service/form-validation/form-validation.service";
-import {ProductPayload, ProductResponse} from "../../interfaces/product";
+import { ProductResponse } from "../../interfaces/product";
 
 @Component({
   selector: 'app-product-update',
