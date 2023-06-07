@@ -9,6 +9,7 @@ const AWS = require('aws-sdk');
 
 const indexRouter = require('./routes/index');
 const productsRouter = require('./routes/products');
+const usersRouter = require('./routes/users')
 
 const app = express();
 const mongoDBUrl = 'mongodb+srv://andriiserkhovetcdev:vkyGegste8tZEhP4@products.xokp2rc.mongodb.net/Product';
@@ -40,9 +41,8 @@ AWS.config.update({
     region: 'eu-north-1'
 });
 
-app.use('/', indexRouter);
+app.use('/api', usersRouter);
 app.use('/api/products', productsRouter);
-app.use('/uploads', express.static('uploads'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

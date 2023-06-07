@@ -1,0 +1,41 @@
+<div class="row justify-content-center mt-5">
+  <div class="col-md-8">
+    <h1>{{ actionText }}</h1>
+    <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label class="pb-1">Email</label>
+        <input
+          class="form-control"
+          type="email" formControlName="email"
+          [ngClass]="{'is-invalid': isInvalid('email')}"
+          required>
+        <div *ngIf="isInvalid('email')" class="error-message">
+          {{ getErrorMessage('email') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="pb-1">Password</label>
+        <input
+          class="form-control"
+          type="password" formControlName="password"
+          [ngClass]="{'is-invalid': isInvalid('password')}"
+          required>
+        <div *ngIf="isInvalid('password')" class="error-message">
+          {{ getErrorMessage('password') }}
+        </div>
+      </div>
+      <div class="pt-2">
+        <label>{{ actionLabel }}
+          <a [routerLink]="[redirectTo]">
+            {{ linkText }}
+          </a>
+        </label>
+      </div>
+      <div class="form-group d-flex justify-content-end pt-3">
+        <button class="btn btn-primary btn-block" type="submit" [disabled]="authForm.invalid">{{ actionText }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+

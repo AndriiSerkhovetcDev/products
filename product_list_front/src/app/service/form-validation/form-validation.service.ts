@@ -33,6 +33,8 @@ export class FormValidationService {
         return FormValidationErorrs.pattern
       case !!errors[FormValidationErrorType.minlength]:
         return FormValidationErorrs.minLength;
+      case !!errors[FormValidationErrorType.email]:
+        return FormValidationErorrs.emailFormat;
       default:
         return '';
     }

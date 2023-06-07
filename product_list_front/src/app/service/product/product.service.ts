@@ -61,7 +61,7 @@ export class ProductService {
       // Handle server error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    console.log(errorMessage);
+
     return throwError(() => {
       errorMessage;
     });
