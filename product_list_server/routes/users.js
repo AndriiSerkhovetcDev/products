@@ -24,7 +24,7 @@ function authenticateToken(req, res, next) {
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password)
+
   try {
     // Перевірка користувача та пароля в базі даних
     const user = await User.findOne({ email });
