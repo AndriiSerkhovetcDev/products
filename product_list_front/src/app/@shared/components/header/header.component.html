@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" [routerLink]="['/']">Products app</a>
+    <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </a>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li *ngIf="!checkUserIsAuth()" class="nav-item">
+          <a
+            class="nav-link"
+            [routerLinkActive]="'active'"
+            [routerLink]="['/login']">
+            Sing-in
+          </a>
+        </li>
+        <li *ngIf="checkUserIsAuth()" class="nav-item">
+          <a
+            class="nav-link"
+            [routerLinkActive]="'active'"
+            [routerLink]="['/login']"
+            (click)="logoutUser()">
+            Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

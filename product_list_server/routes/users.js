@@ -1,66 +1,99 @@
 const express = require('express');
 const  router = express.Router();
-const User = require('../models/user');
-const secretKey = '3F8aG^vE9*@$2#M!Ks6h#5tN7dQfZp';
 const jwt = require('jsonwebtoken');
+const nano = require('nano');
+const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+dotenv.config();
+const secretKey = process.env.SECRET_KEY;
 
-  if (token == null) {
-    return res.sendStatus(401);
-  }
-
-  jwt.verify(token, secretKey, (err, user) => {
-    if (err) {
-      return res.sendStatus(403);
+// Налаштування підключення до бази даних
+const couchUrl = process.env.COUCH_URL;
+const dbName = process.env.DB_NAME_USERS;
+const username = process.env.NAME;
+const password = process.env.PASSWORD;
+const db = nano({
+  url: couchUrl,
+  requestDefaults: {
+    auth: {
+      username,
+      password
     }
+  }
+}).use(dbName);
 
-    req.user = user;
-    next();
-  });
+db.info((err, body) => {
+  if (err) {
+    console.error('Помилка підключення до бази даних:', err);
+  } else {
+    console.log('Підключено до бази даних:', body);
+  }
+});
+
+function generateToken(email) {
+  const expiresIn = '1h';
+  return  jwt.sign({ email }, secretKey, { expiresIn });
 }
 
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    // Перевірка користувача та пароля в базі даних
-    const user = await User.findOne({ email });
-    if (!user || user.password !== password) {
-      return res.status(401).json({ message: 'Incorrect username or password' });
-    }
-
-    // Генерування JWT токена для аутентифікованого користувача
-    const token = jwt.sign({ email }, secretKey, { expiresIn: '1h' });
-
-    res.json({ token });
-  } catch (error) {
-    res.status(500).json({ message: 'Помилка сервера' });
-  }
-});
-
-
 router.post('/register', async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({ message: 'A user with this name already exists' });
+    const { email, password } = req.body;
+
+    try {
+      await db.get(email);
+      return res.status(400).json({ error: 'A user with this email already exists' });
+    } catch (error) {
+      if (error.statusCode !== 404) {
+        throw error;
+      }
     }
 
-    const newUser = new User({ email, password });
-    await newUser.save();
+    // Хешування пароля
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const token = jwt.sign({ email }, secretKey, { expiresIn: '1h' });
+    // Збереження нового користувача в базі даних
+    await db.insert({ _id: email, password: hashedPassword });
 
-    res.json({ token });
+    const token = generateToken(email);
+
+    res.status(201).json({ message: 'Registration is successful', token });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
+// login
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    let user;
+    try {
+      user = await db.get(email);
+    } catch (error) {
+      if (error.statusCode === 404) {
+        return res.status(401).json({ error: 'Incorrect email or password' });
+      } else {
+        throw error;
+      }
+    }
+
+    // Перевірка пароля
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Incorrect email or password' });
+    }
+
+    // Генерація JWT токена
+    const token = generateToken(email);
+
+      res.json({ message: 'Successful login', token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 module.exports = router;

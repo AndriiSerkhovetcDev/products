@@ -3,16 +3,15 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const mongoose = require('mongoose');
 const cors = require('cors')
 const AWS = require('aws-sdk');
+const dotenv = require('dotenv')
 
 const indexRouter = require('./routes/index');
 const productsRouter = require('./routes/products');
 const usersRouter = require('./routes/users')
 
 const app = express();
-const mongoDBUrl = 'mongodb+srv://andriiserkhovetcdev:vkyGegste8tZEhP4@products.xokp2rc.mongodb.net/Product';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,21 +23,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
-
-// connect to MongoDB
-mongoose.connect(mongoDBUrl, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-      console.log('Connected to MongoDB');
-    })
-    .catch((error) => {
-      console.error('Error connecting to MongoDB:', error);
-    });
+dotenv.config();
 
 // Connect to AWS SDK
 AWS.config.update({
-    accessKeyId: 'AKIAVJU5PL6ZTXHZ3B4T',
-    secretAccessKey: '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',
-    region: 'eu-north-1'
+    accessKeyId: process.env.ACCESS_KEY_ID,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+    region: process.env.AWT_REGION
 });
 
 app.use('/api', usersRouter);
