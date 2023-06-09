@@ -1,0 +1,13 @@
+{
+  "name": "MyApp",
+  "description": "My awesome app",
+  "repository": "https://github.com/AndriiSerkhovetcDev/products",
+  "keywords": ["angular", "expressjs"],
+  "scripts": {
+    "start": "node app.js"
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "PORT": "3000"
+  }
+}
