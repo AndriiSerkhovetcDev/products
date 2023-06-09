@@ -15,15 +15,11 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { }
 
   public registerUser(user: User): Observable<IAuthResponse> {
-    const REGISTER_URL = `${ REST_API }/${ Api.registerUser }`;
-
-    return this.http.post<IAuthResponse>(REGISTER_URL, user);
+    return this.http.post<IAuthResponse>(Api.registerUser, user);
   }
 
   public loginUser(user: User): Observable<IAuthResponse> {
-    const LOGIN_URL = `${ REST_API }/${ Api.loginUser }`;
-
-    return this.http.post<IAuthResponse>(LOGIN_URL, user);
+    return this.http.post<IAuthResponse>(Api.loginUser, user);
   }
 
   public removeUserCredentials(): void {

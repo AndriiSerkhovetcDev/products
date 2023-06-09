@@ -7,7 +7,7 @@ const cors = require('cors')
 const AWS = require('aws-sdk');
 const dotenv = require('dotenv')
 
-const indexRouter = require('./routes/index');
+const indexRouter = require('./routes');
 const productsRouter = require('./routes/products');
 const usersRouter = require('./routes/users')
 
