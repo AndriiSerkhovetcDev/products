@@ -2,8 +2,9 @@
   "name": "product-list-server",
   "version": "0.0.0",
   "private": true,
+  "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app"
   },
   "dependencies": {
     "aws-sdk": "^2.1388.0",

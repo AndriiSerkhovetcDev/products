@@ -7,6 +7,7 @@ const cors = require('cors')
 const AWS = require('aws-sdk');
 const dotenv = require('dotenv')
 
+const port = process.env.PORT || 8080;
 const indexRouter = require('./routes');
 const productsRouter = require('./routes/products');
 const usersRouter = require('./routes/users')
@@ -53,6 +54,10 @@ app.use(function(err, req, res) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+app.listen(port, () => {
+    console.log('Server started on port '+port);
 });
 
 module.exports = app;
