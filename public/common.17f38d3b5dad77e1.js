@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkproduct_list_front=self.webpackChunkproduct_list_front||[]).push([[592],{1109:(s,u,d)=>{d.d(u,{k:()=>e});var e=(()=>((e=e||{}).addedProduct="The product was successfully added",e.updatedProduct="The product has been successfully updated",e))()}}]);
