@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { FormValidationService } from "../../../../@core/services/form-validation/form-validation.service";
 import { IProductResponse } from "../../../../@core/interfaces/product";
 import { ToastrService } from "ngx-toastr";
-import { Subject } from "rxjs";
+import {Subject, takeUntil} from "rxjs";
 import { ProductSuccessMessage } from "../../../../@core/enums/product";
 
 @Component({
@@ -80,7 +80,7 @@ export class ProductUpdateComponent implements OnDestroy {
     formData.append('image', this.selectedFile ? this.selectedFile : this.selectedImagePath);
 
     this.productService.updateProduct(this.id, formData)
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.toastr.success(ProductSuccessMessage.updatedProduct);
         this.router.navigate(['products'])
