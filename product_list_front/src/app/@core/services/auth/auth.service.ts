@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { REST_API } from "../../consts/rest-api";
 import { Api } from "../../enums/api";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
