@@ -1,6 +1,6 @@
 export enum Api {
   // products
-  getProducts = 'api/products',
+  getProducts = 'api/products/',
   addProduct = 'api/products/add',
   updateProduct = 'api/products/update',
   deleteProduct = 'api/products/delete',

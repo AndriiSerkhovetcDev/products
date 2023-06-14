@@ -33,9 +33,9 @@ AWS.config.update({
     region: process.env.AWT_REGION
 });
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'public/index.html'));
-// });
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/index.html'));
+});
 
 app.use('/api', usersRouter);
 app.use('/api/products', productsRouter);
