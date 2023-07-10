@@ -5,6 +5,7 @@ import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { IAuthResponse } from "../../interfaces/token";
 import { User } from "../../interfaces/user";
+import {REST_API} from "../../consts/consts";
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +15,11 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { }
 
   public registerUser(user: User): Observable<IAuthResponse> {
-    return this.http.post<IAuthResponse>(Api.registerUser, user);
+    return this.http.post<IAuthResponse>(`${ REST_API }/${Api.registerUser}`, user);
   }
 
   public loginUser(user: User): Observable<IAuthResponse> {
-    return this.http.post<IAuthResponse>(Api.loginUser, user);
+    return this.http.post<IAuthResponse>(`${ REST_API }/${Api.loginUser}`, user);
   }
 
   public removeUserCredentials(): void {

@@ -33,4 +33,10 @@ export const routes: Routes = [
     loadComponent: () => import('./@shared/components/product/product-update/product-update.component').then(m => m.ProductUpdateComponent),
     canActivate: [AuthGuard],
   },
+
+  {
+    path: 'contacts',
+    loadComponent: () => import('./@shared/components/contacts/contact-list/contact-list.component').then(c => c.ContactListComponent),
+    canActivate: [AuthGuard]
+  }
 ];

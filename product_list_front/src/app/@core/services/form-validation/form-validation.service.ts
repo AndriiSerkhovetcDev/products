@@ -17,6 +17,7 @@ export class FormValidationService {
   }
 
   public getErrorMessage(controlName: string, form: FormGroup): string {
+    console.log(controlName)
     const control = form.get(controlName);
     const errors = control?.errors;
 

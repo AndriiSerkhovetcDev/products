@@ -10,7 +10,8 @@ const dotenv = require('dotenv')
 const port = process.env.PORT || 8080;
 const indexRouter = require('./routes');
 const productsRouter = require('./routes/products');
-const usersRouter = require('./routes/users')
+const usersRouter = require('./routes/users');
+const contactsRouter = require('./routes/contacts')
 
 const app = express();
 
@@ -35,6 +36,7 @@ AWS.config.update({
 
 app.use('/api', usersRouter);
 app.use('/api/products', productsRouter);
+app.use('/api/contacts', contactsRouter);
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/index.html'));

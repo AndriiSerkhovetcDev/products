@@ -1,35 +1,14 @@
 const express = require('express');
 const  router = express.Router();
 const jwt = require('jsonwebtoken');
-const nano = require('nano');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
+const connectToDb = require('../db');
 
 dotenv.config();
 const secretKey = process.env.SECRET_KEY;
-
-// Налаштування підключення до бази даних
-const couchUrl = process.env.COUCH_URL;
-const dbName = process.env.DB_NAME_USERS;
-const username = process.env.NAME;
-const password = process.env.PASSWORD;
-const db = nano({
-  url: couchUrl,
-  requestDefaults: {
-    auth: {
-      username,
-      password
-    }
-  }
-}).use(dbName);
-
-db.info((err, body) => {
-  if (err) {
-    console.error('Помилка підключення до бази даних:', err);
-  } else {
-    console.log('Підключено до бази даних:', body);
-  }
-});
+const dbName = process.env.DB_NAME_USERS
+const db = connectToDb('users');
 
 function generateToken(email) {
   const expiresIn = '1h';

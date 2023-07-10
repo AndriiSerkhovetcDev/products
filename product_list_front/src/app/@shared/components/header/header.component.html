@@ -19,6 +19,14 @@
           <a
             class="nav-link"
             [routerLinkActive]="'active'"
+            [routerLink]="['/contacts']">
+            Contacts
+          </a>
+        </li>
+        <li *ngIf="checkUserIsAuth()" class="nav-item">
+          <a
+            class="nav-link"
+            [routerLinkActive]="'active'"
             [routerLink]="['/login']"
             (click)="logoutUser()">
             Logout

@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http
 import { catchError, map, Observable, throwError } from "rxjs";
 import { Api } from "../../enums/api";
 import { IProductPayload, IProductResponse } from "../../interfaces/product";
+import { REST_API } from "../../consts/consts";
 
 @Injectable({
   providedIn: 'root',
@@ -14,16 +15,16 @@ export class ProductService {
 
   public addProduct(product: FormData): Observable<object> {
     return this.httpClient
-      .post<IProductPayload>(Api.addProduct, product)
+      .post<IProductPayload>(`${ REST_API }/${ Api.addProduct }`, product)
       .pipe(catchError(this.handleError))
   }
 
   public getProducts(): Observable<IProductResponse[]> {
-    return this.httpClient.get<IProductResponse[]>(Api.getProducts);
+    return this.httpClient.get<IProductResponse[]>(`${ REST_API }/${ Api.getProducts }`);
   }
 
   public getProductById(id: string): Observable<IProductResponse> {
-    let API_URL = `${ Api.getProducts }/${ id }`;
+    let API_URL = `${ REST_API }/${ Api.getProducts }/${ id }`;
 
     return this.httpClient
       .get<IProductResponse>(API_URL, { headers: this.httpHeaders }).pipe(
@@ -34,7 +35,7 @@ export class ProductService {
   }
 
   public updateProduct(id: string, product: FormData): Observable<IProductPayload> {
-    let API_URL = `${Api.updateProduct}/${ id }`;
+    let API_URL = `${ REST_API }/${Api.updateProduct}/${ id }`;
 
     return this.httpClient
       .put<IProductPayload>(API_URL, product)
@@ -42,7 +43,7 @@ export class ProductService {
   }
 
   public deleteProduct(id: string) {
-    let API_URL = `${ Api.deleteProduct }/${ id }`;
+    let API_URL = `${ REST_API }/${ Api.deleteProduct }/${ id }`;
 
     return this.httpClient
       .delete(API_URL,{ headers: this.httpHeaders })
