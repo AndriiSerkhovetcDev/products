@@ -2,37 +2,16 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const AWS = require('aws-sdk');
-const nano = require("nano");
+const connectToDb = require('../db');
 
 const dotenv = require('dotenv')
 dotenv.config();
 
 const upload = multer();
 
+const dbName = process.env.DB_NAME_PRODUCTS
 const bucketName = process.env.BUCKET_NAME;
-
-const couchUrl = process.env.COUCH_URL;
-const dbName = process.env.DB_NAME_PRODUCTS;
-const username = process.env.NAME;
-const password = process.env.PASSWORD;
-
-const db = nano({
-    url: couchUrl,
-    requestDefaults: {
-        auth: {
-            username,
-            password
-        }
-    }
-}).use(dbName);
-
-db.info((err, body) => {
-    if (err) {
-        console.error('Error connecting to the database:', err);
-    } else {
-        console.log('Connected:', body);
-    }
-});
+const db = connectToDb('products');
 
 // Отримання всіх продуктів
 router.get('/', async (req, res) => {
@@ -160,7 +139,7 @@ async function createProduct(name, price, description, file) {
 
     const insertResponse = await db.insert(product);
     if (!insertResponse.ok) {
-        throw new Error('Error creating product in CouchDB');
+        throw new Error('Error creating product');
     }
 
     return product;
@@ -225,6 +204,7 @@ function getUniqFilename(file) {
 // Функція для перевірки формату зображення
 function isValidImageFormat(mimetype) {
     const allowedFormats = ['image/jpeg', 'image/png', 'image/webp'];
+
     return allowedFormats.includes(mimetype);
 }
 
